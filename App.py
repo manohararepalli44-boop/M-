@@ -1,7 +1,6 @@
 from flask import Flask, render_template_string, request, redirect, jsonify
 import sqlite3
 import random
-import requests
 
 app = Flask(__name__)
 
@@ -42,19 +41,6 @@ LANGUAGES = {
     }
 }
 
-# --- SMS OTP ఫంక్షన్ ---
-def send_real_sms(mobile, otp_code):
-    api_key = "YOUR_FAST2SMS_API_KEY_HERE"
-    message = f"Your OTP code is {otp_code}. Sent from M App."
-    print(f"--- SMS SENT TO {mobile}: {message} ---")
-    try:
-        url = "https://www.fast2sms.com/dev/bulkV2"
-        headers = {'authorization': api_key}
-        payload = {'message': message, 'language': 'english', 'route': 'q', 'numbers': mobile}
-        requests.post(url, headers=headers, data=payload)
-    except:
-        pass
-
 # --- డేటాబేస్ సెటప్ ---
 def init_db():
     conn = sqlite3.connect('m_app_users.db')
@@ -75,7 +61,7 @@ def init_db():
 init_db()
 temp_otps = {}
 
-# --- HTML మాస్టర్ UI ---
+# --- HTML/CSS/JavaScript మాస్టర్ UI ---
 MAIN_UI = """
 <!DOCTYPE html>
 <html>
@@ -94,7 +80,7 @@ MAIN_UI = """
         .link { color:#00376b; text-decoration:none; display:inline-block; margin-top:15px; font-size:14px; }
         .error { color:red; font-size:13px; margin:10px 0; }
         
-        /* డాష్‌బోర్డ్ డిజైన్ */
+        /* డాష్‌బోర్డ్ స్టైల్స్ */
         .dashboard { max-width:800px; width:100%; display:flex; background:white; border:1px solid #dbdbdb; border-radius:8px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
         .left-panel { flex:1; border-right:1px solid #efefef; padding:20px; text-align:left; line-height:2; }
         .right-panel { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
@@ -104,7 +90,7 @@ MAIN_UI = """
         .crop-controls { display:none; margin-top:15px; text-align:center; }
         .crop-controls input { width:120px; }
         
-        /* Edit Details బటన్ - మొదట్లో దాచి ఉంచబడుతుంది (Hidden) */
+        /* Edit Details ఆప్షన్ మొదట్లో దాచబడుతుంది */
         #edit_btn_container { display: none; margin-top:20px; }
         
         /* ఎడిట్ పాపప్ బాక్స్ */
@@ -232,6 +218,7 @@ MAIN_UI = """
     <script>
     let userMobile = "";
     
+    // --- స్క్రీన్ మీదే నేరుగా టెస్టింగ్ OTP అలర్ట్ చూపే ఫంక్షన్ ---
     function sendOTP(type) {
         let num = type === 'signup' ? document.getElementById('mobile').value : document.getElementById('f_mobile').value;
         if(!num) { alert("Enter mobile number"); return; }
@@ -239,7 +226,7 @@ MAIN_UI = """
         fetch('/api/send_otp?mobile=' + num)
         .then(res => res.json())
         .then(data => {
-            alert(data.msg);
+            alert(data.msg); // ఇక్కడే బ్రాకెట్లలో OTP కోడ్ వచ్చేస్తుంది
             if(type === 'signup') document.getElementById('step2').style.display = 'block';
             else document.getElementById('f_step2').style.display = 'block';
         });
@@ -273,7 +260,7 @@ MAIN_UI = """
         });
     }
 
-    // --- ప్రొఫైల్ ఇమేజ్ సెట్ చేసాకే Edit Details బటన్ వస్తుంది ---
+    // --- ప్రొఫైల్ పిక్చర్ సేవ్ చేసాకే ఎడిట్ ఆప్షన్స్ లోడ్ అవ్వడం ---
     function loadImg(e) {
         let img = document.getElementById('view_pic');
         img.src = URL.createObjectURL(e.target.files[0]);
@@ -290,13 +277,13 @@ MAIN_UI = """
     }
     
     function savePic() {
-        alert("Profile picture styled and set successfully!");
+        alert("Profile picture set successfully!");
         document.getElementById('controls').style.display = 'none';
-        // ఇమేజ్ సెట్ చేసాక మాత్రమే Edit Details ఆప్షన్ బటన్ ఓపెన్ అవుతుంది
+        // ఇమేజ్ సెట్ చేసాకే కింద Edit Details బటన్ కనిపిస్తుంది
         document.getElementById('edit_btn_container').style.display = 'block';
     }
 
-    // --- ఎడిట్ ఆప్షన్స్ పాపప్ ఫంక్షన్స్ ---
+    // --- ఎడిట్ ఆప్షన్స్ పాపప్ సబ్మిషన్ ---
     function openEditPopup() {
         document.getElementById('editPopup').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
@@ -318,11 +305,11 @@ MAIN_UI = """
         .then(data => {
             alert(data.msg);
             if(data.status === 'success') {
-                // వెంటనే ఎడమవైపు (Left Page) వివరాలు కొత్తగా మారిపోతాయి
+                // వెంటనే పేజీ రీఫ్రెష్ అవ్వకుండా ఎడమవైపు లైవ్ లో కొత్త వివరాలు మారిపోతాయి
                 document.getElementById('lbl_fullname').innerText = newFullname;
                 document.getElementById('lbl_username').innerText = newUsername;
                 
-                // పాపప్ బాక్స్ క్లోజ్ అవుతుంది
+                // పాపప్ క్లోజ్ అవుతుంది
                 document.getElementById('editPopup').style.display = 'none';
                 document.getElementById('overlay').style.display = 'none';
             }
@@ -349,13 +336,14 @@ def forgot():
     lang = request.args.get('lang', 'en')
     return render_template_string(MAIN_UI, page='forgot', lang=lang, t=LANGUAGES[lang])
 
+# --- స్క్రీన్ మీదే OTP ని పంపించే API రూట్ ---
 @app.route('/api/send_otp')
 def api_send_otp():
     mobile = request.args.get('mobile')
     otp = str(random.randint(100000, 999999))
     temp_otps[mobile] = otp
-    send_real_sms(mobile, otp)
-    return jsonify({"status": "success", "msg": f"OTP sent to {mobile}!"})
+    # ఇక్కడే డైరెక్ట్‌గా మెసేజ్ లోనే OTP పంపేస్తున్నాం కాబట్టి స్క్రీన్ అలర్ట్ లో కనిపిస్తుంది
+    return jsonify({"status": "success", "msg": f"OTP sent to {mobile}! (టెస్టింగ్ OTP: {otp})"})
 
 @app.route('/api/verify_otp')
 def api_verify_otp():
@@ -411,8 +399,8 @@ def login_submit():
     
     if user:
         return render_template_string(MAIN_UI, page='dashboard', user=user, lang=lang, t=LANGUAGES[lang])
-    else:
-        return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
+        else:
+           return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
 
 @app.route('/signup_finish', methods=['POST'])
 def signup_finish():
@@ -434,4 +422,5 @@ def signup_finish():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
+
+        
