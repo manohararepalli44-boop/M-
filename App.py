@@ -13,15 +13,21 @@ LANGUAGES = {
         'send_otp': 'Send OTP', 'enter_otp': 'Enter OTP', 'verify': 'Verify OTP',
         'full_name': 'Enter your full name', 'id_name': 'Create your ID name', 'set_pass': 'Set Password',
         'submit': 'Enter', 'wrong': 'Wrong username or password!', 'otp_sent': 'OTP sent successfully!',
-        'wrong_otp': 'Wrong OTP! Try again.', 'fill_fields': 'Please fill all fields.'
+        'wrong_otp': 'Wrong OTP! Try again.', 'fill_fields': 'Please fill all fields.',
+        'welcome': 'Welcome', 'lbl_fullname': 'Full Name', 'lbl_mobile': 'Mobile', 'logout': 'Logout',
+        'edit_btn': '⚙ Edit Details', 'edit_title': 'Update Details', 
+        'chg_fullname': 'Change your full name:', 'chg_id': 'Change your ID name:', 'ok': 'OK'
     },
     'te': {
         'logo': 'M', 'user_placeholder': 'యూజర్ నేమ్, ఈమెయిల్ లేదా మొబైల్ నంబర్', 'pass_placeholder': 'పాస్‌వర్డ్',
-        'login': 'లాగిన్...] అవ్వండి', 'forgot': 'పాస్‌వర్డ్ మర్చిపోయారా?', 'create_acc': 'కొత్త खाताను సృష్టించండి',
+        'login': 'లాగిన్ అవ్వండి', 'forgot': 'పాస్‌వర్డ్ మర్చిపోయారా?', 'create_acc': 'కొత్త ఖాతాను సృష్టించండి',
         'send_otp': 'OTP పంపండి', 'enter_otp': 'OTP ని నమోదు చేయండి', 'verify': 'OTP ని వెరిఫై చేయండి',
         'full_name': 'మీ పూర్తి పేరును నమోదు చేయండి', 'id_name': 'మీ ఐడీ పేరును సృష్టించండి', 'set_pass': 'పాస్‌వర్డ్ సెట్ చేయండి',
         'submit': 'సమర్పించు', 'wrong': 'తప్పుడు యూజర్ నేమ్ లేదా పాస్‌వర్డ్!', 'otp_sent': 'OTP విజయవంతంగా పంపబడింది!',
-        'wrong_otp': 'తప్పుడు OTP! మళ్ళీ ప్రయత్నించండి.', 'fill_fields': 'దయచేసి అన్ని వివరాలు పూరించండి.'
+        'wrong_otp': 'తప్పుడు OTP! మళ్ళీ ప్రయత్నించండి.', 'fill_fields': 'దయచేసి అన్ని వివరాలు పూరించండి.',
+        'welcome': 'స్వాగతం', 'lbl_fullname': 'పూర్తి పేరు', 'lbl_mobile': 'మొబైల్', 'logout': 'లాగౌట్',
+        'edit_btn': '⚙ వివరాలను సవరించు', 'edit_title': 'వివరాలను నవీకరించండి', 
+        'chg_fullname': 'మీ పూర్తి పేరును మార్చండి:', 'chg_id': 'మీ ఐడీ పేరును మార్చండి:', 'ok': 'సరే'
     },
     'hi': {
         'logo': 'M', 'user_placeholder': 'यूजरनेम, ईमेल या मोबाइल नंबर', 'pass_placeholder': 'पासवर्ड',
@@ -29,11 +35,14 @@ LANGUAGES = {
         'send_otp': 'ओटीपी भेजें', 'enter_otp': 'ओटीपी दर्ज करें', 'verify': 'ओटीपी सत्यापित करें',
         'full_name': 'अपना पूरा नाम दर्ज करें', 'id_name': 'अपनी आईडी का नाम बनाएं', 'set_pass': 'पासवर्ड सेट करें',
         'submit': 'दर्ज करें', 'wrong': 'गलत उपयोगकर्ता नाम या पासवर्ड!', 'otp_sent': 'ओटीपी सफलतापूर्वक भेजा गया!',
-        'wrong_otp': 'गलत ओटीपी! फिर से प्रयास करें।', 'fill_fields': 'कृपया सभी फ़ील्ड भरें।'
+        'wrong_otp': 'गलत ओटीपी! फिर से प्रयास करें।', 'fill_fields': 'कृपया सभी फ़ील्ड भरें.',
+        'welcome': 'स्वागत हे', 'lbl_fullname': 'पूरा नाम', 'lbl_mobile': 'मोबाइल', 'logout': 'लॉगआउट',
+        'edit_btn': '⚙ विवरण संपादित करें', 'edit_title': 'विवरण अपडेट करें', 
+        'chg_fullname': 'अपना पूरा नाम बदलें:', 'chg_id': 'अपनी आईडी का नाम बदलें:', 'ok': 'ठीक है'
     }
 }
 
-# --- SMS OTP పంపే ఫంక్షన్ ---
+# --- SMS OTP ఫంక్షన్ ---
 def send_real_sms(mobile, otp_code):
     api_key = "YOUR_FAST2SMS_API_KEY_HERE"
     message = f"Your OTP code is {otp_code}. Sent from M App."
@@ -46,7 +55,7 @@ def send_real_sms(mobile, otp_code):
     except:
         pass
 
-# --- డేటాబేస్ செటప్ ---
+# --- డేటాబేస్ సెటప్ ---
 def init_db():
     conn = sqlite3.connect('m_app_users.db')
     cursor = conn.cursor()
@@ -85,7 +94,7 @@ MAIN_UI = """
         .link { color:#00376b; text-decoration:none; display:inline-block; margin-top:15px; font-size:14px; }
         .error { color:red; font-size:13px; margin:10px 0; }
         
-        /* డాష్‌బోర్డ్ లెఫ్ట్ & రైట్ డిజైన్ */
+        /* డాష్‌బోర్డ్ డిజైన్ */
         .dashboard { max-width:800px; width:100%; display:flex; background:white; border:1px solid #dbdbdb; border-radius:8px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
         .left-panel { flex:1; border-right:1px solid #efefef; padding:20px; text-align:left; line-height:2; }
         .right-panel { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
@@ -95,7 +104,10 @@ MAIN_UI = """
         .crop-controls { display:none; margin-top:15px; text-align:center; }
         .crop-controls input { width:120px; }
         
-        /* ఎడిట్ బాక్స్ మోడల్ స్టైల్ */
+        /* Edit Details బటన్ - మొదట్లో దాచి ఉంచబడుతుంది (Hidden) */
+        #edit_btn_container { display: none; margin-top:20px; }
+        
+        /* ఎడిట్ పాపప్ బాక్స్ */
         .edit-popup { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; border:1px solid #dbdbdb; padding:20px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.1); z-index:100; width:90%; max-width:350px; }
         .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:99; }
     </style>
@@ -176,15 +188,13 @@ MAIN_UI = """
 
     {% elif page == 'dashboard' %}
     <div class="dashboard">
-        <!-- ఎడమవైపు యూజర్ డీటెయిల్స్ -->
         <div class="left-panel">
-            <h2>Welcome, @<span id="lbl_username">{{ user[1] }}</span>!</h2>
-            <p><strong>Full Name:</strong> <span id="lbl_fullname">{{ user[2] }}</span></p>
-            <p><strong>Mobile:</strong> {{ user[3] }}</p>
-            <a href="/" class="link" style="color:red; margin-top:30px;">Logout</a>
+            <h2>{{ t.welcome }}, @<span id="lbl_username">{{ user[1] }}</span>!</h2>
+            <p><strong>{{ t.lbl_fullname }}:</strong> <span id="lbl_fullname">{{ user[2] }}</span></p>
+            <p><strong>{{ t.lbl_mobile }}:</strong> {{ user[3] }}</p>
+            <a href="/?lang={{ lang }}" class="link" style="color:red; margin-top:30px;">{{ t.logout }}</a>
         </div>
         
-        <!-- కుడివైపు ప్రొఫైల్ ఫోటో ఎడిటర్ -->
         <div class="right-panel">
             <div class="profile-circle" onclick="document.getElementById('fileInput').click()">
                 <span class="plus-icon" id="plus">+</span>
@@ -198,23 +208,24 @@ MAIN_UI = """
                 <button class="btn" onclick="savePic()" style="padding:5px 10px; font-size:12px; width:auto; display:inline-block;">Set Profile Pic</button>
             </div>
             
-            <!-- Edit Details బటన్ ఆప్షన్ -->
-            <button class="btn" onclick="openEditPopup()" style="background:#262626; margin-top:20px; width:150px;">⚙ Edit Details</button>
+            <div id="edit_btn_container">
+                <button class="btn" onclick="openEditPopup()" style="background:#262626; width:160px;">{{ t.edit_btn }}</button>
+            </div>
         </div>
     </div>
 
-    <!-- ఎడిట్ పాపప్ బాక్స్ -->
     <div class="overlay" id="overlay"></div>
     <div class="edit-popup" id="editPopup">
-        <h3>Update Details</h3>
-        <label style="text-align:left; display:block; margin-top:10px; font-size:13px; font-weight:bold;">Change your full name:</label>
+        <h3>{{ t.edit_title }}</h3>
+        
+        <label style="text-align:left; display:block; margin-top:15px; font-size:13px; font-weight:bold;">{{ t.chg_fullname }}</label>
         <input type="text" id="edit_fullname" value="{{ user[2] }}">
         
-        <label style="text-align:left; display:block; margin-top:10px; font-size:13px; font-weight:bold;">Change your ID name:</label>
+        <label style="text-align:left; display:block; margin-top:10px; font-size:13px; font-weight:bold;">{{ t.chg_id }}</label>
         <input type="text" id="edit_username" value="{{ user[1] }}">
         
         <input type="hidden" id="user_id" value="{{ user[0] }}">
-        <button class="btn" onclick="submitEditDetails()">OK</button>
+        <button class="btn" onclick="submitEditDetails()">{{ t.ok }}</button>
     </div>
     {% endif %}
 
@@ -262,7 +273,7 @@ MAIN_UI = """
         });
     }
 
-    // --- ప్రొఫైల్ ఫోటో ఎడిటింగ్ ---
+    // --- ప్రొఫైల్ ఇమేజ్ సెట్ చేసాకే Edit Details బటన్ వస్తుంది ---
     function loadImg(e) {
         let img = document.getElementById('view_pic');
         img.src = URL.createObjectURL(e.target.files[0]);
@@ -272,16 +283,20 @@ MAIN_UI = """
         document.getElementById('plus').style.display = 'none';
         document.getElementById('controls').style.display = 'block';
     }
+    
     function resizeImg(val) {
         let img = document.getElementById('view_pic');
         img.style.transform = "scale(" + (val/100) + ")";
     }
+    
     function savePic() {
         alert("Profile picture styled and set successfully!");
         document.getElementById('controls').style.display = 'none';
+        // ఇమేజ్ సెట్ చేసాక మాత్రమే Edit Details ఆప్షన్ బటన్ ఓపెన్ అవుతుంది
+        document.getElementById('edit_btn_container').style.display = 'block';
     }
 
-    // --- వివరాలు ఎడిట్ చేసే కొత్త ఫంక్షన్స్ ---
+    // --- ఎడిట్ ఆప్షన్స్ పాపప్ ఫంక్షన్స్ ---
     function openEditPopup() {
         document.getElementById('editPopup').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
@@ -303,10 +318,11 @@ MAIN_UI = """
         .then(data => {
             alert(data.msg);
             if(data.status === 'success') {
-                // వెంటనే స్క్రీన్ మీద ఉన్న డీటెయిల్స్ అప్‌డేట్ అవుతాయి
+                // వెంటనే ఎడమవైపు (Left Page) వివరాలు కొత్తగా మారిపోతాయి
                 document.getElementById('lbl_fullname').innerText = newFullname;
                 document.getElementById('lbl_username').innerText = newUsername;
-                // పాపప్ క్లోజ్ చేయడం
+                
+                // పాపప్ బాక్స్ క్లోజ్ అవుతుంది
                 document.getElementById('editPopup').style.display = 'none';
                 document.getElementById('overlay').style.display = 'none';
             }
@@ -317,7 +333,7 @@ MAIN_UI = """
 </html>
 """
 
-# --- సర్వర్ రూట్స్ (Backend Routes) ---
+# --- సర్వర్ బ్యాకెండ్ రూట్స్ ---
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
@@ -364,7 +380,6 @@ def api_reset_pass():
         return jsonify({"status": "success", "msg": "Password updated successfully!"})
     return jsonify({"status": "error", "msg": "Invalid OTP Verification Failed!"})
 
-# ప్రొఫైల్ అప్‌డేట్ చేసే కొత్త API
 @app.route('/api/update_profile', methods=['POST'])
 def api_update_profile():
     data = request.get_json()
@@ -405,9 +420,8 @@ def signup_finish():
     mobile = request.form.get('final_mobile')
     full_name = request.form.get('full_name')
     username = request.form.get('username')
-    password = request.form.get('password')
-    
-    try:
+    password = request.form.get('password ')
+        try:
         conn = sqlite3.connect('m_app_users.db')
         cursor = conn.cursor()
         cursor.execute('INSERT INTO users (username, full_name, mobile, password) VALUES (?, ?, ?, ?)', (username, full_name, mobile, password))
