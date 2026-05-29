@@ -402,6 +402,23 @@ def login_submit():
         else:
            return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
 
+@app.route('/login_submit', methods=['POST'])
+def login_submit():
+    lang = request.args.get('lang', 'en')
+    user_input = request.form.get('username')
+    password = request.form.get('password')
+    
+    conn = sqlite3.connect('m_app_users.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE (username=? OR mobile=?) AND password=?', (user_input, user_input, password))
+    user = cursor.fetchone()
+    conn.close()
+    
+    if user:
+        return render_template_string(MAIN_UI, page='dashboard', user=user, lang=lang, t=LANGUAGES[lang])
+    else:
+        return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
+
 @app.route('/signup_finish', methods=['POST'])
 def signup_finish():
     lang = request.args.get('lang', 'en')
@@ -423,4 +440,3 @@ def signup_finish():
 if __name__ == '__main__':
     app.run(debug=True)
 
-        
