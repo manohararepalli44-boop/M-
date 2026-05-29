@@ -321,6 +321,7 @@ MAIN_UI = """
 """
 
 # --- సర్వర్ బ్యాకెండ్ రూట్స్ ---
+# --- సర్వర్ బ్యాకెండ్ రూట్స్ ---
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
@@ -342,7 +343,6 @@ def api_send_otp():
     mobile = request.args.get('mobile')
     otp = str(random.randint(100000, 999999))
     temp_otps[mobile] = otp
-    # ఇక్కడే డైరెక్ట్‌గా మెసేజ్ లోనే OTP పంపేస్తున్నాం కాబట్టి స్క్రీన్ అలర్ట్ లో కనిపిస్తుంది
     return jsonify({"status": "success", "msg": f"OTP sent to {mobile}! (టెస్టింగ్ OTP: {otp})"})
 
 @app.route('/api/verify_otp')
@@ -399,23 +399,6 @@ def login_submit():
     
     if user:
         return render_template_string(MAIN_UI, page='dashboard', user=user, lang=lang, t=LANGUAGES[lang])
-        else:
-           return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
-
-@app.route('/login_submit', methods=['POST'])
-def login_submit():
-    lang = request.args.get('lang', 'en')
-    user_input = request.form.get('username')
-    password = request.form.get('password')
-    
-    conn = sqlite3.connect('m_app_users.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE (username=? OR mobile=?) AND password=?', (user_input, user_input, password))
-    user = cursor.fetchone()
-    conn.close()
-    
-    if user:
-        return render_template_string(MAIN_UI, page='dashboard', user=user, lang=lang, t=LANGUAGES[lang])
     else:
         return redirect(f"/?lang={lang}&msg=" + LANGUAGES[lang]['wrong'])
 
@@ -439,4 +422,4 @@ def signup_finish():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
+    
