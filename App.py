@@ -420,8 +420,9 @@ def signup_finish():
     mobile = request.form.get('final_mobile')
     full_name = request.form.get('full_name')
     username = request.form.get('username')
-    password = request.form.get('password ')
-        try:
+    password = request.form.get('password')
+    
+    try:
         conn = sqlite3.connect('m_app_users.db')
         cursor = conn.cursor()
         cursor.execute('INSERT INTO users (username, full_name, mobile, password) VALUES (?, ?, ?, ?)', (username, full_name, mobile, password))
@@ -433,3 +434,4 @@ def signup_finish():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
