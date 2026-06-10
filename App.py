@@ -34,7 +34,7 @@ LANGUAGES = {
         'chg_fullname': 'మీ పూర్తి పేరును మార్చండి:', 'chg_id': 'మీ ఐడీ పేరును మార్చండి:', 'ok': 'సరే',
         'about_me': 'నా గురించి (About Me)', 'save_about': 'సేవ్ చేయి', 'search_title': 'ఐడీ కోసం వెతకండి',
         'search_btn': 'వెతుకు', 'not_found': 'ఈ ఐడీ పేరుతో ఎవరూ లేరు!', 'message_btn': 'మెసేజ్ చేయి',
-        'send_btn': 'పంపు', 'call_alert': 'కాల్ ఫీచర్ తదుపరి అప్‌డేట్‌లో వస్తుంది!',
+        'send_btn': 'పంపు', 'call_alert': 'కాల్ ఫీチャー తదుపరి అప్‌డేట్‌లో వస్తుంది!',
         'edit_msg': 'మెసేజ్ సవరించు', 'chats_title': 'మీ చాట్స్'
     },
     'hi': {
@@ -58,7 +58,6 @@ LANGUAGES = {
 def init_db():
     with sqlite3.connect('m_app_users.db') as conn:
         cursor = conn.cursor()
-        # యూజర్స్ టేబుల్ (About Me యాడ్ అయింది)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,7 +69,6 @@ def init_db():
                 about_me TEXT DEFAULT ''
             )
         ''')
-        # మెసేజ్ స్టోరేజ్ టేబుల్ (Instagram లాంటి రియల్-టైమ్ స్టోరేజ్)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,19 +95,15 @@ MAIN_UI = """
         * { margin:0; padding:0; box-sizing:border-box; font-family:sans-serif; }
         body { background:#fafafa; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:0; }
         
-        /* కంటైనర్ & మొబైల్ ఫ్రెండ్లీ థీమ్ */
         .app-container { width:100%; max-width:420px; height:100vh; background:white; display:flex; flex-direction:column; position:relative; border-left:1px solid #dbdbdb; border-right:1px solid #dbdbdb; }
         
-        /* పైన బ్లూ కలర్ స్పేస్ / హెడర్ */
         .blue-header { background: #0095f6; color: white; padding: 15px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .blue-header a { color: white; text-decoration: none; font-size: 14px; }
         
-        /* కింద గ్రీన్ కలర్ స్పేస్ / నేవిగేషన్ బార్ */
-        .green-footer { background: #2ecc71; height: 60px; display: flex; justify-content: space-around; align-items: center; position: absolute; bottom: 0; width: 100%; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
+        .green-footer { background: #2ecc71; height: 60px; display: flex; justify-content: space-around; align-items: center; position: absolute; bottom: 0; width: 100%; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); z-index: 10; }
         .footer-icon { font-size: 24px; color: white; cursor: pointer; text-decoration: none; background: none; border: none; }
         .footer-profile-pic { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
         
-        /* మెయిన్ బాడీ కంటెంట్ */
         .content-area { flex: 1; padding: 20px; overflow-y: auto; margin-bottom: 60px; }
         
         .card { background:white; padding:20px; text-align:center; border-radius:4px; width: 100%; }
@@ -118,7 +112,6 @@ MAIN_UI = """
         .btn { width:100%; padding:10px; background:#0095f6; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer; }
         .error { color:red; font-size:13px; margin:10px 0; }
         
-        /* డాష్‌బోర్డ్ ప్రొఫైల్ స్టైలింగ్ (Image 1000162373.jpg లాగా) */
         .profile-section { display: flex; margin-top: 15px; border-bottom: 1px solid #efefef; padding-bottom: 20px; text-align: left;}
         .p-left { flex: 1.2; line-height: 1.8; font-size: 15px; }
         .p-right { flex: 0.8; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -126,26 +119,21 @@ MAIN_UI = """
         .profile-circle img { width:100%; height:100%; object-fit:cover; }
         .plus-icon { font-size:30px; color:#8e8e8e; position:absolute; }
         
-        /* అబౌట్ మీ బాక్స్ డిజైన్ */
         .about-display { background: #f7f9fa; border-left: 4px solid #0095f6; padding: 10px; margin-top: 15px; border-radius: 4px; text-align: left; }
         
-        /* చాట్ విండో (ఇన్‌స్టాగ్రామ్ లాంటి స్టైల్) */
         .chat-container { display: flex; flex-direction: column; height: 100%; }
         .chat-messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; }
         .msg-bubble { max-width: 75%; padding: 10px; margin: 5px 0; border-radius: 15px; font-size: 14px; position: relative; word-wrap: break-word; cursor: pointer; }
         .msg-sender { background: #e1ffc7; align-self: flex-end; border-bottom-right-radius: 0; text-align: right; }
         .msg-receiver { background: #f1f0f0; align-self: flex-start; border-bottom-left-radius: 0; }
         
-        /* సన్నటి మొబైల్ మెసేజ్ బాక్స్ */
         .chat-input-area { display: flex; padding: 8px; border-top: 1px solid #efefef; background: white; align-items: center; }
         .chat-input-area input { flex: 1; padding: 8px 12px; margin: 0; border-radius: 20px; border: 1px solid #dbdbdb; }
         .chat-input-area button { background: none; border: none; color: #0095f6; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 15px; }
         
-        /* లిస్ట్ వ్యూస్ */
         .item-row { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f1f1; cursor: pointer; text-decoration: none; color: black; }
         .item-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ddd; margin-right: 12px; object-fit: cover; }
         
-        /* పాపప్ మోడల్స్ */
         .popup-modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; border:1px solid #dbdbdb; padding:20px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.15); z-index:100; width:90%; max-width:360px; }
         .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:99; }
     </style>
@@ -154,7 +142,6 @@ MAIN_UI = """
 
     <div class="app-container">
         
-        <!-- లాగిన్/సైన్అప్/ఫర్గాట్ పేజీలు తప్ప మిగిలిన వాటికి టాప్ హెడర్ ఉంటుంది -->
         {% if page not in ['login', 'signup', 'forgot'] %}
         <div class="blue-header">
             <span>
@@ -178,10 +165,8 @@ MAIN_UI = """
         </div>
         {% endif %}
 
-        <!-- మెయిన్ కంటెంట్ ఏరియా -->
         <div class="content-area">
             
-            <!-- 1. లాగిన్ పేజీ -->
             {% if page == 'login' %}
             <div class="card" style="margin-top: 40px;">
                 <form method="GET" action="/">
@@ -198,13 +183,11 @@ MAIN_UI = """
                     <input type="password" name="password" placeholder="{{ t.pass_placeholder }}" required>
                     <button class="btn" type="submit" style="margin-top:10px;">{{ t.login }}</button>
                 </form>
-                <a href="/forgot?lang={{ lang }}" class="link" style="display:inline-block; margin-top:15px; color:#00376b; text-decoration:none;">{{ t.forgot }}</a>
+                <a href="/forgot?lang={{ lang }}" style="display:inline-block; margin-top:15px; color:#00376b; text-decoration:none;">{{ t.forgot }}</a>
                 <a href="/signup?lang={{ lang }}" class="btn" style="background:#262626; text-decoration:none; display:block; margin-top:25px; text-align:center;">{{ t.create_acc }}</a>
             </div>
 
-            <!-- 2. సైన్ అప్ పేజీ -->
-            {% if page == 'signup' %}
-            <!-- (పాత సైన్అప్ కోడ్ యథాతథంగా ఇక్కడ రన్ అవుతుంది) -->
+            {% elif page == 'signup' %}
             <div class="card">
                 <div class="logo-m">{{ t.logo }}</div>
                 <h3>{{ t.create_acc }}</h3>
@@ -228,10 +211,8 @@ MAIN_UI = """
                 </div>
                 <a href="/?lang={{ lang }}" style="display:block; margin-top:15px;">Back to Login</a>
             </div>
-            {% endif %}
 
-            <!-- 3. పాస్‌వర్డ్ రీసెట్ పేజీ -->
-            {% if page == 'forgot' %}
+            {% elif page == 'forgot' %}
             <div class="card">
                 <div class="logo-m">{{ t.logo }}</div>
                 <h3>{{ t.forgot }}</h3>
@@ -246,9 +227,7 @@ MAIN_UI = """
                 </div>
                 <a href="/?lang={{ lang }}" style="display:block; margin-top:15px;">Back to Login</a>
             </div>
-            {% endif %}
 
-            <!-- 4. ప్రొఫైల్ డాష్‌బోర్డ్ పేజీ (Image 1000162373.jpg డిజైన్) -->
             {% elif page == 'dashboard' %}
             <div class="profile-section">
                 <div class="p-left">
@@ -271,13 +250,11 @@ MAIN_UI = """
                 </div>
             </div>
             
-            <!-- అబౌట్ మీ ప్రదర్శన స్పేస్ -->
             <div class="about-display">
                 <strong>About me:-</strong>
                 <p id="about_text_p" style="color:#555; white-space: pre-wrap; margin-top:5px;">{{ user[6] if user[6] else 'No about text added yet.' }}</p>
             </div>
 
-            <!-- 5. యూజర్ సెర్చ్ పేజీ -->
             {% elif page == 'search' %}
             <h3>{{ t.search_title }}</h3>
             <form method="POST" action="/search_user?lang={{ lang }}" style="display:flex; margin-top:10px;">
@@ -288,7 +265,6 @@ MAIN_UI = """
                 <div class="error" style="margin-top:20px; font-weight:bold;">{{ msg }}</div>
             {% endif %}
 
-            <!-- 6. ఇతరుల ప్రొఫైల్ చూసే పేజీ (సెర్చ్ రిజల్ట్) -->
             {% elif page == 'view_profile' %}
             <div class="profile-section">
                 <div class="p-left">
@@ -309,16 +285,14 @@ MAIN_UI = """
                 <strong>About me:-</strong>
                 <p style="color:#555; white-space: pre-wrap; margin-top:5px;">{{ target_user[6] if target_user[6] else '' }}</p>
             </div>
-            <!-- మొబైల్ ఆప్షన్ బదులు 'Message' బటన్ ఇక్కడ యాడ్ చేయబడింది -->
             <a href="/chat/{{ target_user[0] }}?lang={{ lang }}" class="btn" style="margin-top:25px; display:block; text-align:center; background:#2ecc71; text-decoration:none;">💬 {{ t.message_btn }}</a>
 
-            <!-- 7. ఇన్‌స్టాగ్రామ్ లాంటి చాట్ విండో -->
             {% elif page == 'chat_window' %}
             <div class="chat-container">
                 <div class="chat-messages" id="chat_msg_box">
                     {% for msg in chat_messages %}
                         <div class="msg-bubble {% if msg[1] == session['user_id'] %}msg-sender{% else %}msg-receiver{% endif %}" 
-                             onclick="triggerEditMessage('{{ msg[0] }}', '{{ msg[3] }}', '{{ msg[1] }}')"
+                             onclick="triggerEditMessage('{{ msg[0] }}', '{{ msg[3] }}', '{{ msg[1] }}')">
                             {{ msg[3] }}
                         </div>
                     {% endfor %}
@@ -329,7 +303,6 @@ MAIN_UI = """
                 </form>
             </div>
 
-            <!-- 8. యాక్టివ్ చాట్స్ లిస్ట్ పేజీ -->
             {% elif page == 'chats_list' %}
             <h3>{{ t.chats_title }}</h3>
             <div style="margin-top:15px;">
@@ -344,14 +317,14 @@ MAIN_UI = """
                     </div>
                 </a>
                 {% else %}
-                    <p style="color:#888; text-align:center; margin-top:30px;">No active chats yet. Use Search to start a conversation!</p>
+                    <p style="color:#888; tex 
+                    t-align:center; margin-top:30px;">No active chats yet. Use Search to start a conversation!</p>
                 {% endfor %}
             </div>
             {% endif %}
 
         </div>
 
-        <!-- కింద గ్రీన్ కలర్ నేవిగేషన్ బార్ (లాగిన్ స్క్రీన్లలో రాదు) -->
         {% if page not in ['login', 'signup', 'forgot'] %}
         <div class="green-footer">
             <a href="/search?lang={{ lang }}" class="footer-icon">🔍</a>
@@ -364,17 +337,14 @@ MAIN_UI = """
 
     </div>
 
-    <!-- --- అన్ని పాపప్ విండోస్ (Modals) --- -->
     <div class="overlay" id="overlay" onclick="closeAllPopups()"></div>
     
-    <!-- 1. అబౌట్ మీ ఎంటర్ చేసే పాపప్ బాక్స్ -->
     <div class="popup-modal" id="aboutPopup">
         <h3>{{ t.about_me }}</h3>
         <textarea id="about_input_text" rows="4" placeholder="Write something about yourself..."></textarea>
         <button class="btn" onclick="submitAboutMe()">{{ t.ok }}</button>
     </div>
 
-    <!-- 2. ప్రొఫైల్ ఎడిట్ పాపప్ -->
     <div class="popup-modal" id="editPopup">
         <h3>{{ t.edit_title }}</h3>
         <label style="text-align:left; display:block; margin-top:10px; font-size:13px; font-weight:bold;">{{ t.chg_fullname }}</label>
@@ -384,7 +354,6 @@ MAIN_UI = """
         <button class="btn" onclick="submitEditDetails()">{{ t.ok }}</button>
     </div>
 
-    <!-- 3. మెసేజ్ ఎడిట్ పాపప్ బాక్స్ -->
     <div class="popup-modal" id="msgEditPopup">
         <h3>{{ t.edit_msg }}</h3>
         <input type="hidden" id="edit_msg_id">
@@ -393,7 +362,6 @@ MAIN_UI = """
     </div>
 
     <script>
-    // చాట్ బాక్స్ ఆటోమేటిక్ గా కిందకు స్క్రోల్ అవ్వడానికి
     window.onload = function() {
         var box = document.getElementById('chat_msg_box');
         if(box) { box.scrollTop = box.scrollHeight; }
@@ -535,7 +503,7 @@ MAIN_UI = """
     </script>
 </body>
 </html>
-\"\"\"
+"""
 
 # --- సర్వర్ బ్యాకెండ్ రూట్స్ ---
 @app.route('/')
@@ -753,5 +721,3 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
