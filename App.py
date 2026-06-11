@@ -38,7 +38,7 @@ LANGUAGES = {
         'chg_fullname': 'మీ పూర్తి పేరును మార్చండి:', 'chg_id': 'మీ ఐడీ పేరును మార్చండి:', 'ok': 'సరే',
         'about_me': 'నా గురించి (About Me)', 'save_about': 'సేవ్ చేయి', 'search_title': 'ఐడీ కోసం వెతకండి',
         'search_btn': 'వెతుకు', 'not_found': 'ఈ ఐడీ పేరుతో ఎవరూ లేరు!', 'message_btn': 'మెసేజ్ చేయి',
-        'send_btn': 'పంపు', 'call_alert': 'కాల్ ఫీచర్ తదుపరి అప్‌డేట్‌లో వస్తుంది!',
+        'send_btn': 'పంపు', 'call_alert': 'కాల్ ఫీチャー తదుపరి అప్‌డేట్‌లో వస్తుంది!',
         'edit_msg': 'మెసేజ్ సవరించు', 'chats_title': 'మీ చాట్స్'
     },
     'hi': {
@@ -358,7 +358,7 @@ def signup_finish():
         
         session.permanent = True  
         session['user_id'] = new_id
-    /dashboard?lang={lang}')
+                  return redirect(f'/dashboard?lang={lang}')
     except Exception as e:
         return redirect(f'/signup?lang={lang}&msg=Username already exists!')
 
