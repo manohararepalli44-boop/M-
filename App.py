@@ -299,45 +299,6 @@ def index():
         return redirect(f'/dashboard?lang={lang}')
     return render_template_string(MAIN_UI, page='login', lang=lang, t=LANGUAGES[lang], msg=request.args.get('msg'))
 
-@app.route('/login_submit', methods=['POST'])
-def login_submit():
-    lang = request.args.get('lang', 'en')
-    username = request.form.get('username')
-    password = request.form.get('password')
-    
-    conn = psycopg2.connect(DB_URL)
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, password FROM users WHERE username = %s OR mobile = %s", (username, username))
-    user = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    
-    if user and user[1] == password:
-        session.permanent = True  
-        session['user_id'] = user[0]
-        return redirect(f'/dashboard?lang={lang}')
-    return redirect(f'/?lang={lang}&msg=' + LANGUAGES[lang]['wrong'])
-
-@app.route('/signup')
-def signup():
-    lang = request.args.get('lang', 'en')
-    return render_template_string(MAIN_UI, page='signup', lang=lang, t=LANGUAGES[lang])
-
-@app.route('/send_otp_ajax')
-def send_otp_ajax():
-    mobile = request.args.get('mobile')
-    otp = str(random.randint(1000, 9999))
-    temp_otps[mobile] = otp
-    return jsonify({'success': True, 'otp': otp})
-
-@app.route('/verify_otp_ajax')
-def verify_otp_ajax():
-    mobile = request.args.get('mobile')
-    otp = request.args.get('otp')
-    if temp_otps.get(mobile) == otp:
-        return jsonify({'success': True})
-    return jsonify({'success': False})
-
 @app.route('/signup_finish', methods=['POST'])
 def signup_finish():
     lang = request.args.get('lang', 'en')
@@ -358,7 +319,7 @@ def signup_finish():
         
         session.permanent = True  
         session['user_id'] = new_id
-                  return redirect(f'/dashboard?lang={lang}')
+        return redirect(f'/dashboard?lang={lang}')
     except Exception as e:
         return redirect(f'/signup?lang={lang}&msg=Username already exists!')
 
