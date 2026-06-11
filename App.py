@@ -5,16 +5,11 @@ import random
 from datetime import timedelta
 
 app = Flask(__name__)
-# యాప్ సెక్యూరిటీ కీ
 app.secret_key = 'm_app_super_secret_key_2026'
-
-# --- 1. యూజర్ లాగిన్ ఎప్పటికీ పోకుండా ఉండటానికి (365 రోజులు సెట్ చేసాను) ---
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
 
-# --- 2. మీ SUPABASE క్లౌడ్ డేటాబేస్ లింక్ (పాస్‌వర్డ్ పక్కాగా సెట్ చేయబడింది) ---
 DB_URL = "postgresql://postgres.ksooqeaoeihmcpwxlyeh:mano%219133584715@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
 
-# --- మల్టీ-లాంగ్వేజ్ ట్రాన్స్‌లేషన్ డేటా ---
 LANGUAGES = {
     'en': {
         'logo': 'M', 'user_placeholder': 'Username, email or mobile number', 'pass_placeholder': 'Password',
@@ -63,7 +58,6 @@ LANGUAGES = {
     }
 }
 
-# --- Supabase లో టేబుల్స్ క్రియేట్ చేసే ఫంక్షన్ ---
 def init_db():
     try:
         conn = psycopg2.connect(DB_URL)
@@ -91,14 +85,12 @@ def init_db():
         conn.commit()
         cursor.close()
         conn.close()
-        print("Supabase క్లౌడ్ డేటాబేస్ విజయవంతంగా కనెక్ట్ అయింది!")
     except Exception as e:
-        print("డేటాబేస్ కనెక్షన్ లో లోపం ఉంది:", e)
+        print("Error:", e)
 
 init_db()
 temp_otps = {}
 
-# --- HTML/CSS/JavaScript మాస్టర్ UI ---
 MAIN_UI = """
 <!DOCTYPE html>
 <html>
@@ -300,7 +292,6 @@ MAIN_UI = """
 </html>
 """
 
-# --- సర్వర్ బ్యాకెండ్ రూటింగ్ సిస్టమ్ ---
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
@@ -356,7 +347,7 @@ def signup_finish():
     password = request.form.get('password')
     
     try:
-                conn = psycopg2.connect(DB_URL)
+        conn = psycopg2.connect(DB_URL)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO users (username, full_name, mobile, password) VALUES (%s, %s, %s, %s) RETURNING id", 
                        (username, full_name, mobile, password))
@@ -367,7 +358,7 @@ def signup_finish():
         
         session.permanent = True  
         session['user_id'] = new_id
-        return redirect(f'/dashboard?lang={lang}')
+    /dashboard?lang={lang}')
     except Exception as e:
         return redirect(f'/signup?lang={lang}&msg=Username already exists!')
 
@@ -486,5 +477,4 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-       
+    
