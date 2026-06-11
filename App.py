@@ -11,7 +11,7 @@ app.secret_key = 'm_app_super_secret_key_2026'
 # --- 1. యూజర్ లాగిన్ ఎప్పటికీ పోకుండా ఉండటానికి (365 రోజులు సెట్ చేసాను) ---
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
 
-# --- 2. మీ SUPABASE క్లౌడ్ డేటాబేస్ లింక్ (పాస్‌వర్డ్ సెట్ చేయబడింది) ---
+# --- 2. మీ SUPABASE క్లౌడ్ డేటాబేస్ లింక్ (పాస్‌వర్డ్ పక్కాగా సెట్ చేయబడింది) ---
 DB_URL = "postgresql://postgres.ksooqeaoeihmcpwxlyeh:mano%219133584715@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
 
 # --- మల్టీ-లాంగ్వేజ్ ట్రాన్స్‌లేషన్ డేటా ---
@@ -33,7 +33,7 @@ LANGUAGES = {
     },
     'te': {
         'logo': 'M', 'user_placeholder': 'యూజర్ నేమ్, ఈమెయిల్ లేదా మొబైల్ నంబర్', 'pass_placeholder': 'పాస్‌వర్డ్',
-        'login': 'లాగిన్ అవ్వండి', 'forgot': 'పాస్‌వర్డ్ మర్చిపోయారా?', 'create_acc': 'కొత్త ఖాతాను సృష్టించండి',
+        'login': 'లాగిన్ అవ్వండి', 'forgot': 'పాస్‌వర్డ్ మర్చిపోయారా?', 'create_acc': 'కొత్త खाताను సృష్టించండి',
         'send_otp': 'OTP పంపండి', 'enter_otp': 'OTP ని నమోదు చేయండి', 'verify': 'OTP ని వెరిఫై చేయండి',
         'full_name': 'మీ పూర్తి పేరును నమోదు చేయండి', 'id_name': 'మీ ఐడీ పేరును సృష్టించండి', 'set_pass': 'పాస్‌వర్డ్ సెట్ చేయండి',
         'submit': 'సమర్పించు', 'wrong': 'తప్పుడు యూజర్ నేమ్ లేదా పాస్‌వర్డ్!', 'otp_sent': 'OTP విజయవంతంగా పంపబడింది!',
@@ -316,14 +316,13 @@ def login_submit():
     
     conn = psycopg2.connect(DB_URL)
     cursor = conn.cursor()
-    # SQLite '?' కి బదులుగా PostgreSQL లో '%s' వాడబడింది
     cursor.execute("SELECT id, password FROM users WHERE username = %s OR mobile = %s", (username, username))
     user = cursor.fetchone()
     cursor.close()
     conn.close()
     
     if user and user[1] == password:
-        session.permanent = True  # <-- పర్మనెంట్ లాగిన్ ఎనేబుల్ అయింది
+        session.permanent = True  
         session['user_id'] = user[0]
         return redirect(f'/dashboard?lang={lang}')
     return redirect(f'/?lang={lang}&msg=' + LANGUAGES[lang]['wrong'])
@@ -353,17 +352,11 @@ def signup_finish():
     lang = request.args.get('lang', 'en')
     mobile = request.form.get('final_mobile')
     full_name = request.form.get('full_name')
-    username = request.
-    @app.route('/signup_finish', methods=['POST'])
-def signup_finish():
-    lang = request.args.get('lang', 'en')
-    mobile = request.form.get('final_mobile')
-    full_name = request.form.get('full_name')
     username = request.form.get('username')
     password = request.form.get('password')
     
     try:
-        conn = psycopg2.connect(DB_URL)
+                conn = psycopg2.connect(DB_URL)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO users (username, full_name, mobile, password) VALUES (%s, %s, %s, %s) RETURNING id", 
                        (username, full_name, mobile, password))
@@ -372,7 +365,7 @@ def signup_finish():
         cursor.close()
         conn.close()
         
-        session.permanent = True  # <-- పర్మనెంట్ లాగిన్
+        session.permanent = True  
         session['user_id'] = new_id
         return redirect(f'/dashboard?lang={lang}')
     except Exception as e:
@@ -473,7 +466,7 @@ def chats_list():
     my_id = session['user_id']
     
     conn = psycopg2.connect(DB_URL)
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor = conn.cursor(cursor_factory=DictCursor)
     cursor.execute("""
         SELECT DISTINCT u.id, u.username FROM users u
         JOIN messages m ON (u.id = m.sender_id OR u.id = m.receiver_id)
@@ -493,4 +486,5 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
+
+       
